@@ -1,6 +1,6 @@
 {
-  "name": "cbevins-tinker",
-  "description": "@cbevins sapper-webpack-template for tinkering",
+  "name": "cbevins-fire-ellipse",
+  "description": "Fire elliptical growth for tinkering",
   "version": "0.0.1",
   "scripts": {
     "dev": "sapper dev",
