@@ -51,6 +51,9 @@
 <nav>
 	<ul>
 		<li><a aria-current="{segment === undefined ? 'page' : undefined}" href=".">Home</a></li>
+		<li><a aria-current="{segment === 'ellipseMesh' ? 'ellipseMesh' : undefined}" href="ellipseMesh">EllipseMesh</a></li>
+		<li><a aria-current="{segment === 'canvasLogo' ? 'canvasLogo' : undefined}" href="canvasLogo">CanvasLogo</a></li>
+		<li><a aria-current="{segment === 'canvasFire' ? 'canvasFire' : undefined}" href="canvasFire">CanvasFire</a></li>
 		<li><a aria-current="{segment === 'about' ? 'page' : undefined}" href="about">About</a></li>
 		<li><a aria-current="{segment === 'releaseNotes' ? 'page' : undefined}" href="releaseNotes">Release Notes</a></li>
 	</ul>
