@@ -17,7 +17,7 @@
 	<title>Tinker Project</title>
 </svelte:head>
 
-<h3>Fire Ellipse Tinker Project</h3>
+<h3>DEPRECATED - Fire Ellipse Tinker Project</h3>
 <p class='mb-2'>
   Currently at step {fp.currentStep()} with {$boundary.length} points
 </p>

@@ -24,7 +24,7 @@ function testEllipseLine() {
   console.log(`h=${h}, k=${k}, a=${a} b=${6} m=${m} c=${c}`)
   console.log(`φ = ${φ}, t1=${t1}, t2=${t2}, t3=${t3}`)
 
-  // Solving equation   (3)   for   x1,2   we get:
+  // Solving equation (3) for x1,2 we get:
   // x_1,2 = (36 * 2 - 9*0.5*1.75 ± 3*6 √(36 + 9*0.25 - 2 * 0.5 * 1.75 * 2 - 1.75^2- 0.5^2 * 4)) / (36 + 9 * 0.5^2)
   // x_1,2 = (64.125 ± 18√30.6875) / 38.25
   // x_1,2 = (64.125 ± 99.713) / 38.25

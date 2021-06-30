@@ -89,7 +89,7 @@ export function updateImageData (canvas, ctx) {
 
 export const burned = 127 // red value for pixels ignited during previous time steps
 export const burning = 255 // red value for pixels ignited at the current time step
-export const unburned = 0 // red value for unignited pixels
+export const unburned = 1 // red value for unignited pixels
 
 const unburnableMin = 64
 const unburnableMax = 80
@@ -130,12 +130,32 @@ export function setBurned (img, x, y) { setChannel(img, x, y, burned)}
 export function setBurning (img, x, y) { setChannel(img, x, y, burning)}
 export function setUnburned (img, x, y) { setChannel(img, x, y, unburned)}
 
-// Returns number of burning pixels
-export function burnedPixelCount (img) { return channelPixelCount(img, 0, burned) }
-export function burningPixelCount (img) { return channelPixelCount(img, 0, burning) }
+// Returns number of pixels by burning status
+// It also sets any red pixel that is not unburned, burning, burned, or unburnable
+// to 'burning', to get rid of drawing artifacts like borders, shadows, etc
+export function burnStatus (img) {
+  const n = {unburned: 0,  burning: 0, burned: 0, unburnable: 0, fixed: 0, total: 0}
+  for (let y=0; y<img.height; y++) {
+    for (let x=0; x<img.width; x++) {
+      const r = getRed(img, x, y)
+      n.total++
+      if (r === unburned) n.unburned++
+      else if (r === burning) n.burning++
+      else if (r === burned) n.burned++
+      else if (r >= unburnableMin && r <= unburnableMax) n.unburnable++
+      else {
+        setRed(img, x, y, burning)
+        n.burning++
+        n.fixed++
+      }
+    }
+  }
+  n.adjacent = getFireFront(img).length
+  return n
+}
 
 // Finds all unburned, burnable pixels adjacent to burning or burned pixels
-export function burnableAdjacentPixels (img) {
+export function getFireFront (img) {
   const pixels = []
   for (let y=0; y<img.height; y++) {
     for (let x=0; x<img.width; x++) {
@@ -146,9 +166,13 @@ export function burnableAdjacentPixels (img) {
           || isBurnedOrBurning(img, x, y-1) // north pixel
           || isBurnedOrBurning(img, x+1, y+1) // se pixel, 8-way
           || isBurnedOrBurning(img, x+1, y-1) // ne pixel, 8-way
-          || isBurnedOrBurning(img, x-1, y+1) // sw pixel 8-way
-          || isBurnedOrBurning(img, x-1, y-1) // nw pixel
-        ) adjacentPixels.push([x,y])
+          || isBurnedOrBurning(img, x-1, y+1) // sw pixel, 8-way
+          || isBurnedOrBurning(img, x-1, y-1) // nw pixel, 8-way
+        ) {
+          // console.log('burnable adjacent:', x, y)
+          // setRgba(img, x, y, {r: 255, g: 255, b: 255, a: 255})
+          pixels.push([x,y])
+        }
       }
     }
   }

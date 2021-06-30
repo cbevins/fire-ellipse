@@ -1,11 +1,11 @@
 <script>
 	import { onMount } from 'svelte';
-  import { burningRgba, burningPixelCount, unburnedRgba } from '../models/imageData.js'
+  import { burnStatus, burningRgba, unburnedRgba }from '../models/imageData.js'
 
   // These properties define a fire ellipse
-  let head = 180
-  let back = 20
-  let flank = 50
+  let head = 90
+  let back = 10
+  let flank = 25
   let angle = 0
 
   // These properties are set by onMount()
@@ -17,8 +17,10 @@
   let running = false
   let label = 'Start'
   let started = null
+  let status = {unburned: 0, burning: 0, burned: 0, unburnable: 0, fixed: 0,
+    total:0, adjacent: 0}
 
-  function animate() {
+  function animateRotation() {
 		frame = requestAnimationFrame(loop)
 		function loop(t) {
       if (running) {
@@ -30,7 +32,8 @@
           running = false
         }
         drawEllipse(ctx, atX, atY, head, back, flank, angle)
-        console.log(burningPixels(), updateImageData())
+        const img = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        status = burnStatus(img)
       }
     }
   }
@@ -44,6 +47,7 @@
   // Draws a fire ellipse with ignition point at ignX, ignY
   function drawEllipse(ctx, ignX, ignY, head, back, flank, angle) {
     ctx.fillStyle = unburnedRgba
+    ctx.strokeStyle = unburnedRgba
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     let [cx, cy] = ellipseCenter(ignX, ignY, head, back, angle)
@@ -52,6 +56,7 @@
     const b = flank
     // fire ellipse centered on ignition pt
     ctx.fillStyle = burningRgba
+    ctx.strokeStyle = burningRgba
     ctx.beginPath()
     ctx.ellipse(cx, cy, a, b, rot, 0, 2 * Math.PI)
     ctx.fill()
@@ -83,27 +88,7 @@
     return Math.PI * (a + b) * xk
   }
 
-  function scanLines () {
-    const img = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    const row = []
-    for (let y=0; y<img.height; y++) {
-      let first = -1
-      let last = -1
-      for (let x=0; x<img.width; x++) {
-        const red = getRed(img, x, y)
-        if (red === burning && first < 0) { // first burning pixel of row
-          first = x
-        } else if (red !== burning && first >= 0) { // last burning pixel of row
-          last = x-1
-          row.push([y-atY, first-x, last-x]) // NOTE: y above ignY are negative
-          break
-        }
-      }
-    }
-    return row
-  }
-
-  function start () {
+  function startRotation () {
     if ( running ) {
       running = false
       cancelAnimationFrame(frame)
@@ -113,20 +98,16 @@
       started = Date.now()
       running = true
       label = 'Stop'
-      animate()
+      animateRotation()
     }
   }
 
-  function step () {
+  function stepRotation () {
     drawEllipse(ctx, atX, atY, head, back, flank, angle++)
-    // console.log(burningPixels(), getPixel(200, 200))
-    // scanLines().forEach(([row, first, last]) => {
-    //   console.log(row, first, last, (last - first + 1))
-    // } )
     const img = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    console.log('pixels=', burningPixelCount(img),
-      'area=', Math.round(area(head, back, flank)),
+    console.log('area=', Math.round(area(head, back, flank)),
       'perim=', Math.round(perimeter(head, back, flank)))
+    status = burnStatus(img)
   }
 </script>
 
@@ -134,8 +115,9 @@
 	<title>Tinker Project</title>
 </svelte:head>
 
-<button class='btn-primary mb-3' on:click={start}>{label}</button>
-<button class='btn-primary mb-3' on:click={step}>Step</button>
+<button class='btn-primary mb-3' on:click={startRotation}>{label} Rotation</button>
+<button class='btn-primary mb-3' on:click={stepRotation}>Step Rotation</button>
+<p>Unburned={status.unburned} Burning={status.burning}, Burned={status.burned}, Fixed={status.fixed} Adjacent={status.adjacent}</p>
 <canvas bind:this={canvas} width={400} height={400}></canvas>
 
 <style>

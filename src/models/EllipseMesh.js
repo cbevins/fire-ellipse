@@ -37,6 +37,7 @@ export class EllipseMesh {
     })
   }
 
+  // Determines the start and end point of each pixel row and column
   _setScanLines() {
     // Traverse each y row to obtain the horizontal scanline end points
     let m = 1
@@ -86,6 +87,7 @@ export class EllipseMesh {
     return [x1, y1, x2, y2]
   }
 
+  // Rotates point 'p' around the center 'c' by 'radians'
   rotatePoint(px, py, cx, cy, rad) {
     const cosa = Math.cos(rad)
     const sina = Math.sin(rad)
@@ -94,16 +96,19 @@ export class EllipseMesh {
     return [x, y]
   }
 }
-const e = new EllipseMesh(4, 1, 2, 0, 1, 1)
-const h = e._cx
-const k = e._cy
-const a = e._a
-const b = e._b
-const rad = 45 * Math.PI / 180
-const iStep = e._hy / Math.cos(rad)
-console.log(iStep)
-for (let i=0; i<=5; i++) {
-  console.log(e.ellipseLine(h, k, a, b, rad, i*iStep))
+
+function test() {
+  const e = new EllipseMesh(4, 1, 2, 0, 1, 1)
+  const h = e._cx
+  const k = e._cy
+  const a = e._a
+  const b = e._b
+  const rad = 45 * Math.PI / 180
+  const iStep = e._hy / Math.cos(rad)
+  console.log(iStep)
+  for (let i=0; i<=5; i++) {
+    console.log(e.ellipseLine(h, k, a, b, rad, i*iStep))
+  }
 }
 
 

@@ -51,6 +51,7 @@
 <nav>
 	<ul>
 		<li><a aria-current="{segment === undefined ? 'page' : undefined}" href=".">Home</a></li>
+		<li><a aria-current="{segment === 'fireGrowth' ? 'fireGrowth' : undefined}" href="fireGrowth">FireGrowth</a></li>
 		<li><a aria-current="{segment === 'ellipseMesh' ? 'ellipseMesh' : undefined}" href="ellipseMesh">EllipseMesh</a></li>
 		<li><a aria-current="{segment === 'canvasLogo' ? 'canvasLogo' : undefined}" href="canvasLogo">CanvasLogo</a></li>
 		<li><a aria-current="{segment === 'canvasFire' ? 'canvasFire' : undefined}" href="canvasFire">CanvasFire</a></li>

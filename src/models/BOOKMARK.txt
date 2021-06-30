@@ -1,0 +1,3 @@
+Collin -
+
+The current lead point is fireGrowth.svelte, Ellipse.js, imageData.js
